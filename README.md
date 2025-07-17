@@ -90,9 +90,3 @@ npm start
 A API estará disponível em `http://localhost:3000`.
 
 ---
-
-## Testes
-
-- Testes unitários para os serviços de cálculo.
-- Testes end-to-end para a rota `/calculate`.
-- Utilização do Jest e Supertest para garantir cobertura e qualidade.
