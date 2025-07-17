@@ -1,29 +1,38 @@
-# Calcular Preço Final com Impostos e Descontos (versão inicial)
+# Refatoração do Projeto de Cálculo de Preço Final com Impostos e Descontos
 
 ---
 
 ## Objetivo
 
-Este projeto é uma API simples que calcula o preço final de um produto com base no país, estado, categoria do produto e
-um código de desconto opcional. A API retorna o preço final, aplicando regras rígidas de impostos e descontos, mas o
-código está escrito de forma desorganizada para ilustrar más práticas de desenvolvimento.
+Este projeto é uma API que calcula o preço final de um produto considerando país, estado, categoria do produto e um código de desconto opcional. A refatoração teve como foco aplicar os princípios de **SOLID** e **Clean Code**, além de utilizar padrões de projeto para melhorar a organização, manutenção e extensibilidade do código.
 
 ---
 
-## Caso de sucesso
+## Melhorias Realizadas
 
-1. ✅ Recebe uma requisição do tipo **GET** na rota **/calculate**.
-2. ✅ Os parâmetros obrigatórios são:
+- Separação da lógica de cálculo em estratégias específicas para impostos e descontos (padrão Strategy).
+- Uso de fábricas para criação das estratégias corretas (padrão Factory).
+- Serviço dedicado para orquestrar o cálculo e geração do relatório.
+- Validação de parâmetros isolada em middleware para maior clareza e reutilização.
+- Código modularizado para facilitar manutenção e testes.
+- Implementação de testes unitários e end-to-end para garantir qualidade e funcionamento.
+- Remoção de logs diretos no console, adotando respostas estruturadas.
+- Tratamento de erros aprimorado, com mensagens claras para o cliente.
+
+---
+
+## Funcionalidades
+
+1. Recebe requisições **GET** na rota **/calculate** com os parâmetros necessários.
+2. Parâmetros obrigatórios:
     - **country** (país)
     - **state** (estado)
-    - **category** (categoria do produto).
-    - **price** (preço do produto, como número).
-3. ✅ Opcionalmente, pode receber:
-    - **discountCode** (código de desconto aplicável).
-4. ✅ Calcula os impostos com base no país, estado e categoria do produto.
-5. ✅ Aplica descontos, se o código for válido.
-6. ✅ Gera um relatório no console com os detalhes da operação.
-7. ✅ Retorna um JSON contendo o preço final calculado.
+    - **category** (categoria do produto)
+    - **price** (preço do produto, numérico)
+3. Parâmetro opcional:
+    - **discountCode** (código de desconto válido)
+4. Aplica regras de cálculo de impostos e descontos conforme as estratégias definidas.
+5. Retorna um relatório detalhado em JSON com o cálculo final.
 
 ---
 
@@ -63,67 +72,27 @@ GET http://localhost:3000/calculate?country=USA&state=CA&category=electronics&pr
 ```
 
 ---
+
 ## Códigos de desconto válidos
-- SUMMER10: Aplica 10% de desconto.
-- WINTER15: Aplica 15% de desconto.
+
+- **SUMMER10**: Aplica 10% de desconto.
+- **WINTER15**: Aplica 15% de desconto.
 
 ---
 
-##  Erros comuns
-
-- Parâmetro ausente: Certifique-se de que todos os parâmetros obrigatórios estejam na URL.
-
-- Preço inválido: O preço deve ser um número maior que zero.
-
----
-
-## Exceções
-
-### Erro 400
-
-Ocorre quando qualquer um dos seguintes parâmetros obrigatórios está ausente ou inválido:
-
-- country: País do cliente (ex.: USA, Canada).
-- state: Estado do cliente (ex.: CA, TX).
-- category: Categoria do produto (ex.: electronics, books).
-- price: Preço do produto (deve ser numérico e maior que zero).
-
-```json
-{
-  "error": "Parâmetros ausentes ou inválidos"
-}
-```
-
-### Erro 500
-
-Retorna quando ocorre qualquer outro problema inesperado no servidor, como falha de lógica ou exceções não tratadas.
-
-```json
-{
-  "error": "Erro inesperado no servidor"
-}
-```
-
----
-
-## Problemas identificados no código atual:
-
-- Função monolítica (calculate): Combina lógica de cálculo de impostos, descontos e geração de relatórios, violando o princípio de responsabilidade única.
-- Validação de parâmetros na rota: O processo de validação está misturado à lógica da rota.
-- Console.log no servidor: A geração do relatório direto no console não é prática em ambientes de produção.
-- Sem estrutura modular: A lógica poderia ser separada em funções ou arquivos para facilitar manutenção e testes.
-- Tratamento de erros: O tratamento de erros é limitado.
-
----
-
-# Como executar o projeto
+## Como Executar o Projeto
 
 ```bash
 npm install
-```
-
-```bash
-npm run dev
+npm start
 ```
 
 A API estará disponível em `http://localhost:3000`.
+
+---
+
+## Testes
+
+- Testes unitários para os serviços de cálculo.
+- Testes end-to-end para a rota `/calculate`.
+- Utilização do Jest e Supertest para garantir cobertura e qualidade.
